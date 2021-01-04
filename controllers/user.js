@@ -29,7 +29,7 @@ const authentication = async(req , res) => {
         res.status(500).json( {message : "Not found"} )
     }
 }
-
+// validate jwt
 const authenticateToken = async(req , res , next) => {
     const autHeader = req.headers['authorization']
 

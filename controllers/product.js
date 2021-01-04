@@ -1,42 +1,43 @@
-const Category = require('../models/Category')
+const Product = require('../models/product')
 
- const getCategorys = async (req, res)=>{
+    // user user
+ const getProducts = async (req, res)=>{
     const { uuid } = req.params
     try{
-        const users = await Category.find().where( 'userId' , uuid )
-        res.send( users )
+        const products = await Category.find().where( 'userId' , uuid )
+        res.send( products )
     }catch(err){
-        res.status(400).json( {message : "Server Error" } )
+        res.status(500).json( {message : "Server Error" } )
     }
 }
 
-const addCategory = async(req , res)=>{ 
-    const newCategory = new Category(req.body)
+const addProduct = async(req , res)=>{ 
+    const newProduct = new Product(req.body)
     try{
-        const addedCategory = await newCategory.save()
-        res.status(201).json(addedCategory)
+        const addedProduct = await newProduct.save()
+        res.status(201).json(addedProduct)
     }catch(err){
         res.status(400).json( {message : "Server Error" } )
     }
 }
 
-const getCategory = async (req , res)=>{
+const getProduct = async (req , res)=>{
     const { uuid } = req.params
     
     try{ 
-        category = await Category.findById(uuid)
-        res.status(201).json(category)
+        product = await Product.findById(uuid)
+        res.status(201).json(product)
     }catch(err){
         res.status(500).json( {message : "Not found"} )
     }
 }
 
-const deleteCategory = async (req , res)=>{
+const deleteProduct = async (req , res)=>{
     const { uuid } = req.params
     try{
-        category = await Category.findById(uuid)
-        if(category != null){
-            await Category.remove(category);
+        product = await Product.findById(uuid)
+        if(product != null){
+            await Product.remove(product);
             res.status(201).json({ success : true })
         }else{
             res.status(404).json( {message : "Not found"} )
@@ -48,8 +49,8 @@ const deleteCategory = async (req , res)=>{
  
 
 module.exports = {
-    getCategorys,
-    addCategory,
-    getCategory,
-    deleteCategory
+    getProducts,
+    addProduct,
+    getProduct,
+    deleteProduct
 };
