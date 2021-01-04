@@ -1,18 +1,29 @@
+require('dotenv').config()
+
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+
 
 const authentication = async(req , res) => {
 
     try{ 
-        let pass = await bcrypt.hash( req.body.password  , 10)
         user = await User.findOne({ username : req.body.username })
 
         if( await bcrypt.compare(  req.body.password , user.password  ) ){
-                res.status(201).json(user)
+        
+             const accessToken = jwt.sign( {
+                name : req.body.username
+            } , process.env.ACCESS_TOKEN_SECRET )
+            
+            res.status(201).json({
+                token : accessToken
+            })
+
         }else{
             res.status(500).json( {message : "wrong pass"} )
         }
-        
         
     }catch(err){
         res.status(500).json( {message : "Not found"} )
