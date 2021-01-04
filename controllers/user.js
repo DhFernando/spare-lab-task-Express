@@ -30,6 +30,21 @@ const authentication = async(req , res) => {
     }
 }
 
+const authenticateToken = async(req , res , next) => {
+    const autHeader = req.headers['authorization']
+
+    if( autHeader == null ) return res.status(401).json( { message : "no token" } )
+    const token = autHeader.split(' ')[1]
+    if( token == null ) return res.status(401).json( { message : "token isse" } )
+
+    jwt.verify(token , process.env.ACCESS_TOKEN_SECRET , ( err , user ) => {
+        if(err) return res.status(401).json( { message : "invalid token" } )
+        req.user = user
+        next()
+    })
+}
+
+
 const register = async(req , res)=>{ 
     
     let user = req.body;
@@ -88,5 +103,6 @@ module.exports = {
     register,
     deleteUser,
     getUser,
-    authentication
+    authentication,
+    authenticateToken
 };
