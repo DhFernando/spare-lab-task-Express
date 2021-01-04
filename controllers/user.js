@@ -14,7 +14,8 @@ const authentication = async(req , res) => {
         if( await bcrypt.compare(  req.body.password , user.password  ) ){
         
              const accessToken = jwt.sign( {
-                name : req.body.username
+                name : req.body.username,
+                _id : user._id
             } , process.env.ACCESS_TOKEN_SECRET )
             
             res.status(201).json({
@@ -29,6 +30,7 @@ const authentication = async(req , res) => {
         res.status(500).json( {message : "Not found"} )
     }
 }
+
 // validate jwt
 const authenticateToken = async(req , res , next) => {
     const autHeader = req.headers['authorization']
@@ -66,6 +68,7 @@ const getUsers = async (req, res)=>{
     try{
         const users = await User.find() 
         res.send( users )
+        
     }catch(err){
         res.status(400).json( {message : "Server Error" } )
     }

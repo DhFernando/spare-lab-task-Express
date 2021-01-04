@@ -1,4 +1,8 @@
+require('dotenv').config()
+
 const Product = require('../models/product')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
     // user user
  const getProducts = async (req, res)=>{
@@ -12,8 +16,14 @@ const Product = require('../models/product')
 }
 
 const addProduct = async(req , res)=>{ 
-    const newProduct = new Product(req.body)
+    const token = req.headers['authorization'].split(' ')[1]
+    const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} )
+
+    let product = req.body;
+    product.userId = payload._id
+
     try{
+        const newProduct = new Product(product)
         const addedProduct = await newProduct.save()
         res.status(201).json(addedProduct)
     }catch(err){

@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 const usersRoutes = require('./routes/user.js')
+const productRoutes = require('./routes/product')
 
 const url = 'mongodb://localhost/cruddb'
 
@@ -17,6 +18,7 @@ con.on('open' , ()=> console.log( 'Connected to DB' ))
 
 
 app.use('/user' , usersRoutes )
+app.use('/product' , productRoutes )
 
 app.get('/' , (req,res)=>{
     res.send('Hello Express')
