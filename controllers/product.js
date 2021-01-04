@@ -16,6 +16,8 @@ const jwt = require('jsonwebtoken')
 }
 
 const addProduct = async(req , res)=>{ 
+
+    // get user information that make request from jwt payload
     const token = req.headers['authorization'].split(' ')[1]
     const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} )
 
