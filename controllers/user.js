@@ -1,19 +1,45 @@
 const User = require('../models/User')
+const bcrypt = require('bcrypt')
 
- const getUsers = async (req, res)=>{
+const authentication = async(req , res) => {
+
+    try{ 
+        let pass = await bcrypt.hash( req.body.password  , 10)
+        user = await User.findOne({ username : req.body.username })
+
+        if( await bcrypt.compare(  req.body.password , user.password  ) ){
+                res.status(201).json(user)
+        }else{
+            res.status(500).json( {message : "wrong pass"} )
+        }
+        
+        
+    }catch(err){
+        res.status(500).json( {message : "Not found"} )
+    }
+}
+
+const register = async(req , res)=>{ 
+    
+    let user = req.body;
+
+    // password hash
+    user.password = await bcrypt.hash( req.body.password  , 10)
+
+    const newUser = new User(user)
+
     try{
-        const users = await User.find() 
-        res.send( users )
+        const addedUser = await newUser.save()
+        res.status(201).json(addedUser)
     }catch(err){
         res.status(400).json( {message : "Server Error" } )
     }
 }
 
-const addUser = async(req , res)=>{ 
-    const newUser = new User(req.body)
+const getUsers = async (req, res)=>{
     try{
-        const addedUser = await newUser.save()
-        res.status(201).json(addedUser)
+        const users = await User.find() 
+        res.send( users )
     }catch(err){
         res.status(400).json( {message : "Server Error" } )
     }
@@ -48,7 +74,8 @@ const deleteUser = async (req , res)=>{
 
 module.exports = {
     getUsers,
-    addUser,
+    register,
     deleteUser,
-    getUser
+    getUser,
+    authentication
 };

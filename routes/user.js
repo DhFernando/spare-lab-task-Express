@@ -6,8 +6,10 @@ const user = require('../controllers/user.js')
 
 // user routes
 
+router.post('/authentication' , user.authentication)
+router.post('/' , user.register )
+
 router.get('/'  ,user.getUsers )
-router.post('/' , user.addUser )
 router.get('/:uuid' , user.getUser)
 router.delete('/:uuid' , user.deleteUser)
 
