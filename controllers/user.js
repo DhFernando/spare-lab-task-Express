@@ -7,27 +7,32 @@ const jwt = require('jsonwebtoken')
 
 
 const authentication = async(req , res) => {
-
+    console.log(req)
     try{ 
+        
         user = await User.findOne({ username : req.body.username })
+        
+        console.log(user)
 
         if( await bcrypt.compare(  req.body.password , user.password  ) ){
-        
+       
              const accessToken = jwt.sign( {
                 name : req.body.username,
                 _id : user._id
-            } , process.env.ACCESS_TOKEN_SECRET )
+            } , "123456789" )
             
             res.status(201).json({
                 token : accessToken
             })
 
         }else{
+            console.log("dd");
             res.status(500).json( {message : "wrong pass"} )
         }
         
     }catch(err){
-        res.status(500).json( {message : "Not found"} )
+        console.log("ddxx");
+        res.status(500).json( {message : "Not foundss"} )
     }
 }
 
@@ -39,7 +44,7 @@ const authenticateToken = async(req , res , next) => {
     const token = autHeader.split(' ')[1]
     if( token == null ) return res.status(401).json( { message : "token isse" } )
 
-    jwt.verify(token , process.env.ACCESS_TOKEN_SECRET , ( err , user ) => {
+    jwt.verify(token , "123456789" , ( err , user ) => {
         if(err) return res.status(401).json( { message : "invalid token" } )
         req.user = user
         next()
